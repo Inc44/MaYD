@@ -16,7 +16,7 @@ info_list = [
         "release_year": "2021",
     }
 ]
-info_list_entry = info_list[0]
+info_list_item = info_list[0]
 file_name_expected = "GOKUMON(UchikubiGokumonDoukoukai), 大澤敦史 - Shufu No Michi - ”Kiwami”meoto kaido - 2021 [4TLFaQWcqH8]"
 
 
@@ -61,7 +61,7 @@ class CoverTestCase(TestCase):
             copy(audio_path_expected_audio_covered, audio_path)
 
             # Test create file name
-            file_name = create_file_name(info_list_entry)
+            file_name = create_file_name(info_list_item)
             self.assertTrue(file_name == file_name_expected)
 
             # Test create file path

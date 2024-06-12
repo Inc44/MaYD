@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 from filecmp import cmp
-from info import download_info, playlist_info, write_info, read_info
+from info import download_info, get_info_path, playlist_info, write_info, read_info
 from os import path, remove, getcwd, chdir
 from parameterized import parameterized
 from unittest import main, TestCase
@@ -22,18 +22,18 @@ class CoverTestCase(TestCase):
             (
                 "single",
                 "https://music.youtube.com/watch?v=4TLFaQWcqH8",
-                "single.database",
-                "single.playlist",
-                "single_expected.database",
-                "single_expected.playlist",
+                "Shufu No Michi.database",
+                "Shufu No Michi.playlist",
+                "Shufu No Michi_single_expected.database",
+                "Shufu No Michi_single_expected.playlist",
             ),
             (
                 "multiple",
                 "https://music.youtube.com/playlist?list=OLAK5uy_lN9u5OOPNcOJtKWUm5ts7gIixbBnDvagQ",
-                "multiple.database",
-                "multiple.playlist",
-                "multiple_expected.database",
-                "multiple_expected.playlist",
+                "Shufu No Michi.database",
+                "Shufu No Michi.playlist",
+                "Shufu No Michi_multiple_expected.database",
+                "Shufu No Michi_multiple_expected.playlist",
             ),
         ]
     )
@@ -52,6 +52,7 @@ class CoverTestCase(TestCase):
                     remove(file_path)
 
             info = download_info(url)
+            playlist_path, database_path = get_info_path(info)
 
             # Test playlist info
             playlist_path_test = playlist_info(info, playlist_path=playlist_path)

@@ -11,6 +11,16 @@ def download_info(url):
     return info
 
 
+def get_info_path(info, playlist_path="main.playlist", database_path="main.database"):
+    entries = info.get("entries", [info])
+    albums = [entry.get("album") for entry in entries]
+    first_album = albums[0]
+    if all(album == first_album for album in albums):
+        playlist_path = f"""{first_album}.playlist"""
+        database_path = f"""{first_album}.database"""
+    return playlist_path, database_path
+
+
 def playlist_info(info, playlist_path="main.playlist"):
     entries = info.get("entries", [info])
     ids = [entry.get("id") for entry in entries if entry.get("id")]
