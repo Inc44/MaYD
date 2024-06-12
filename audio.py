@@ -1,5 +1,5 @@
 from ffmpeg import FFmpeg
-from os import path
+from os import path, remove
 from yt_dlp import YoutubeDL
 
 
@@ -25,5 +25,7 @@ def container_audio(audio_path):
             FFmpeg().option("y").input(audio_path).output(audio_path_opus, c="copy")
         )
         ffmpeg.execute()
+        remove(audio_path)
         audio_path = audio_path_opus
-    return audio_path
+    audio_container_path = audio_path
+    return audio_container_path

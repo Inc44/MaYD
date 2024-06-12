@@ -3,7 +3,7 @@ from ffmpeg import FFmpeg
 from mutagen.flac import Picture
 from mutagen.mp4 import MP4, MP4Cover
 from mutagen.oggopus import OggOpus
-from os import path
+from os import path, remove
 from subprocess import run
 from yt_dlp import YoutubeDL
 
@@ -25,10 +25,11 @@ def extract_cover(video_path):
     cover_path = path.splitext(video_path)[0] + ".png"
     ffmpeg = FFmpeg().option("y").input(video_path).output(cover_path, vframes=1)
     ffmpeg.execute()
+    remove(video_path)
     return cover_path
 
 
-def compress_cover(video_path):
+def compress_cover(cover_path):
     run(
         [
             "ect",
@@ -37,29 +38,32 @@ def compress_cover(video_path):
             "-quiet",
             "--strict",
             "--mt-file",
-            video_path,
+            cover_path,
         ]
     )
+    return cover_path
 
 
-def apply_cover(audio_path, cover_path):
-    extension = path.splitext(audio_path)[1]
+def apply_cover(audio_container_path, cover_path):
+    extension = path.splitext(audio_container_path)[1]
     if extension == ".m4a":
-        apply_cover_m4a(audio_path, cover_path)
+        apply_cover_m4a(audio_container_path, cover_path)
     elif extension == ".opus":
-        apply_cover_opus(audio_path, cover_path)
+        apply_cover_opus(audio_container_path, cover_path)
+    remove(cover_path)
+    return audio_container_path
 
 
-def apply_cover_m4a(audio_path, cover_path):
+def apply_cover_m4a(audio_container_path, cover_path):
     with open(cover_path, "rb") as artwork:
-        file = MP4(audio_path)
+        file = MP4(audio_container_path)
         file["covr"] = [MP4Cover(artwork.read(), imageformat=MP4Cover.FORMAT_PNG)]
         file.save()
 
 
-def apply_cover_opus(audio_path, cover_path):
+def apply_cover_opus(audio_container_path, cover_path):
     with open(cover_path, "rb") as artwork:
-        file = OggOpus(audio_path)
+        file = OggOpus(audio_container_path)
         pic = Picture()
         pic.data = artwork.read()
         pic.type = 3
