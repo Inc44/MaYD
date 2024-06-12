@@ -3,9 +3,10 @@ from url import get_download_domain, create_download_url
 from audio import download_audio, container_audio
 from cover import download_video, extract_cover, compress_cover, apply_cover
 from name import create_file_name, create_file_path
+from multiprocessing import Pool, cpu_count
 
 
-def process_list(url, cookiefile):
+def process_list(url, cookiefile, serial_processing=True):
     info = download_info(url)
     playlist_path, database_path = get_info_path(info)
     playlist_path = playlist_info(info, playlist_path)
@@ -14,8 +15,16 @@ def process_list(url, cookiefile):
 
     download_domain = get_download_domain(url)
 
-    for info_list_item in info_list:
-        process_list_item(info_list_item, download_domain, cookiefile)
+    if serial_processing:
+        for info_list_item in info_list:
+            process_list_item(info_list_item, download_domain, cookiefile)
+    else:
+        info_list_process_count = min(len(info_list), cpu_count())
+        with Pool(info_list_process_count) as pool:
+            pool.starmap(
+                process_list_item,
+                [(item, download_domain, cookiefile) for item in info_list],
+            )
 
 
 def process_list_item(info_list_item, download_domain, cookiefile):

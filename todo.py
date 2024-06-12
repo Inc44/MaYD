@@ -1,4 +1,4 @@
 """
-playlist dir, default within/Desktop, link, .playlist
-database dir, default within/Desktop, tsv,. database
+Add move or download directly to Desktop/specified directory all downloaded content
+Multiprocessing fix downloading youtube music playlist will only download premium audio (141) on first track
 """
