@@ -3,10 +3,6 @@ cookie dir, default within/Desktop, netscape, .txt
 playlist dir, default within/Desktop, link, .playlist
 database dir, default within/Desktop, tsv,. database
 
-invalid filename chars, \/:*?"<>|
-
-%(id)s\t%(title)s\t%(upload_date)s\t%(artist)s\t%(album)s\t%(track)s\t%(release_year)s
-
 https > http
 music > www
 
