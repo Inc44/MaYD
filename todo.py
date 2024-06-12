@@ -8,10 +8,4 @@ music > www
 
 https://youtube.com/watch?v=QrhcfjPFaEk
 https://youtube.com/watch?v=WAyN4mQgl-4
-
---list-formats
-
-yt-dlp --cookies cookies.txt --download-archive yt-dlp.list --ignore-errors --write-info-json --add-metadata --write-sub --sub-lang en,fr,ru,ua,ja --write-thumbnail --embed-thumbnail --extract-audio -f "338/258/328/325/380/774/327/141/256/251" "youtube.com/watch?v=QrhcfjPFaEk"
-
-yt-dlp --write-description --write-comments --write-link --write-auto-subs --embed-subs --embed-thumbnail --embed-chapters --sponsorblock-mark all "youtube.com/watch?v=QrhcfjPFaEk"
 """
