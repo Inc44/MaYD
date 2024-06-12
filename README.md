@@ -2,6 +2,18 @@
 
 MaYD is a project currently in development for downloading music from YouTube.
 
+## 🔧 Usage
+
+1. **URL**:
+    - Description: Enter the URL of the playlist or media you wish to download. To ensure the highest quality audio, use HTTPS over HTTP and prefer music.youtube.com.
+    - Examples: `youtu.be/QrhcfjPFaEk`, `youtu.be/WAyN4mQgl-4`, `https://music.youtube.com/playlist?list=OLAK5uy_lN9u5OOPNcOJtKWUm5ts7gIixbBnDvagQ`
+    - Usage: Provide the URL immediately following the script name in the command line.
+
+2. **Cookie File (Optional)**:
+    - Description: Path to the cookie file in the Netscape format for authentication. It can be obtained via [Get Cookies.txt Locally](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc) or [Cookie-Editor](https://chromewebstore.google.com/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm). This is optional, and if not provided, the script defaults to using `cookies.txt` located within the script directory.
+    - Default: `cookies.txt`
+    - Usage: Use the `--cookiefile` option followed by the path to your cookie file if you need to use a different file than the default.
+
 ## 🚀 Getting Started
 
 ### Installation Steps
