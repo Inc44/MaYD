@@ -3,13 +3,15 @@ from os import path, remove
 from yt_dlp import YoutubeDL
 
 
-def download_audio(url, format="338/258/328/325/380/327/141/774/256/251"):
+def download_audio(
+    url, format="338/258/328/325/380/327/141/774/256/251", cookiefile="cookies.txt"
+):
     ydl_opts = {
         "quiet": True,
         "ignoreerrors": True,
         "outtmpl": "%(id)s.%(ext)s",
         "format": format,
-        "cookiefile": "cookies.txt",
+        "cookiefile": cookiefile,
     }
     with YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=True)
