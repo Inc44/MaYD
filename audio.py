@@ -1,5 +1,5 @@
 from ffmpeg import FFmpeg
-from os import path, remove
+from os import path, remove, rename
 from yt_dlp import YoutubeDL
 
 
@@ -15,7 +15,11 @@ def download_audio(
     }
     with YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=True)
-        audio_path = ydl.prepare_filename(info)
+        # In order to use python-ffmpeg instead of subprocess with a double hyphen (`--`) before the output name, original paths are left stripped
+        original_audio_path = ydl.prepare_filename(info)
+        audio_path = original_audio_path.lstrip("-")
+        if audio_path != original_audio_path:
+            rename(original_audio_path, audio_path)
     return audio_path
 
 

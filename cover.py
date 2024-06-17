@@ -3,21 +3,30 @@ from ffmpeg import FFmpeg
 from mutagen.flac import Picture
 from mutagen.mp4 import MP4, MP4Cover
 from mutagen.oggopus import OggOpus
-from os import path, remove
+from os import path, remove, rename
 from subprocess import run
 from yt_dlp import YoutubeDL
 
 
-def download_video(url):
+def download_video(
+    url,
+    format="699/399/335/303/356/616/248/299/216/137/170/698/398/334/302/612/247/298/136/169",
+    cookiefile="cookies.txt",
+):
     ydl_opts = {
         "quiet": True,
         "ignoreerrors": True,
         "outtmpl": "%(id)s.%(ext)s",
-        "format": "(1080x1080)/699/399/335/303/616/248/299/216/137/170",
+        "format": format,
+        "cookiefile": cookiefile,
     }
     with YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=True)
-        video_path = ydl.prepare_filename(info)
+        # In order to use python-ffmpeg instead of subprocess with a double hyphen (`--`) before the output name, original paths are left stripped
+        original_video_path = ydl.prepare_filename(info)
+        video_path = original_video_path.lstrip("-")
+        if video_path != original_video_path:
+            rename(original_video_path, video_path)
     return video_path
 
 
