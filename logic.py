@@ -6,15 +6,12 @@ from name import create_file_name, create_file_path
 from multiprocessing import Pool, cpu_count
 
 
-def process_list(url, cookiefile, serial_processing=True):
+def process_list(url, cookiefile, serial_processing=False):
     info = download_info(url, cookiefile=cookiefile)
 
-    # Add "move" or "download directly to Desktop/specified directory" option for all downloaded content
+    # Implement a duplicate remover
 
-    # Fix multiprocessing: downloading a YouTube music playlist will download premium audio (141) only on the first track
-
-    # Implement cookie file copy or browser extraction due to relatively quick expiration
-
+    # Create the first run patch
     # Add the following code to the yt_dlp/utils/networking.py file at the beginning of the HTTPHeaderDict class (lines 59 to 64):
     # from yt_dlp.utils.networking import HTTPHeaderDict
     # def __new__(cls, *args, **kwargs):
@@ -24,9 +21,9 @@ def process_list(url, cookiefile, serial_processing=True):
 
     # Faster debugging
     # import pickle
-    # with open('info.pkl', 'wb') as file:
+    # with open("info.pkl", "wb") as file:
     #     pickle.dump(info, file)
-    # with open('info.pkl', 'rb') as file:
+    # with open("info.pkl", "rb") as file:
     #     info = pickle.load(file)
 
     playlist_path, database_path = get_info_path(info)
