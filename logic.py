@@ -56,12 +56,14 @@ def process_list_item(info_list_item, download_domain, cookiefile):
     audio_path = download_audio(download_url, cookiefile=cookiefile)
     audio_container_path = container_audio(audio_path)
 
-    video_path = download_video(download_url, cookiefile=cookiefile)
-    cover_path = extract_cover(video_path)
-    cover_path = compress_cover(cover_path)
-    audio_path = apply_cover(audio_container_path, cover_path)
+    file_name, is_music = create_file_name(info_list_item)
 
-    file_name = create_file_name(info_list_item)
-    file_path = create_file_path(audio_path, file_name)
+    if is_music:
+        video_path = download_video(download_url, cookiefile=cookiefile)
+        cover_path = extract_cover(video_path)
+        cover_path = compress_cover(cover_path)
+        audio_container_path = apply_cover(audio_container_path, cover_path)
+
+    file_path = create_file_path(audio_container_path, file_name)
 
     return file_path
