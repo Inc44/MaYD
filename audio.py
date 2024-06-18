@@ -4,14 +4,16 @@ from yt_dlp import YoutubeDL
 
 
 def download_audio(
-    url, format="338/258/328/325/380/327/141/774/256/251", cookiefile="cookies.txt"
+    url, format="338/258/328/325/380/327/141/774/256/251/140", cookiefile="cookies.txt"
 ):
     ydl_opts = {
         "quiet": True,
         "ignoreerrors": True,
         "outtmpl": "%(id)s.%(ext)s",
         "format": format,
-        "cookiefile": cookiefile,
+        # "cookiefile": cookiefile,
+        # C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe --disable-features=LockProfileCookieDatabase
+        "cookiesfrombrowser": ("edge",),
     }
     with YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=True)

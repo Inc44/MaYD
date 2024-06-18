@@ -14,7 +14,7 @@ def create_file_name(info_list_item):
     file_name = "".join(
         char if char not in invalid_file_name_chars else "" for char in file_name
     )
-    # A more sustainable solution is needed, but this is very rare as it has only happened twice in the past for over 8000 files
+    # A more sustainable solution is needed, but this is very rare as it has only happened three times in the past for over 8000 files
     if len(file_name) > 241:
         file_name = f"""{file_name[:224]}... [{info_list_item["id"]}]"""
     return file_name, is_music
