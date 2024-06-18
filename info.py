@@ -43,7 +43,6 @@ def playlist_info(info, playlist_path="main.playlist"):
             raise ValueError("Unavailable video or YouTube Music Premium only error")
         id = entry.get("id")
         ids.append(id)
-    playlist_link = f"""www.youtube.com/watch_videos?video_ids={",".join(ids)}"""
     with open(playlist_path, "w", encoding="utf-8") as f:
         for id in range(0, len(ids), 50):
             playlist_chunk = ids[id : id + 50]
