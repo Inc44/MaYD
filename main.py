@@ -1,3 +1,4 @@
+# pyinstaller main.py --onefile
 from argparse import ArgumentParser
 from datetime import datetime
 from logic import process_list
