@@ -15,6 +15,9 @@ def download_info(url, cookiefile="cookies.txt"):
 
 
 def get_info_path(info, playlist_path="main.playlist", database_path="main.database"):
+    invalid_file_name_chars = '\/:*?"<>|'
+    clean_translation_table = str.maketrans("", "", invalid_file_name_chars)
+
     entries = info.get("entries", [info])
     previous_album = None
     same_album = True
@@ -29,6 +32,7 @@ def get_info_path(info, playlist_path="main.playlist", database_path="main.datab
         previous_album = current_album
 
     if same_album and previous_album is not None:
+        previous_album = previous_album.translate(clean_translation_table)
         playlist_path = f"""{previous_album}.playlist"""
         database_path = f"""{previous_album}.database"""
 
