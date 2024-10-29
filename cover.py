@@ -18,9 +18,9 @@ def download_video(
         "ignoreerrors": True,
         "outtmpl": "%(id)s.%(ext)s",
         "format": format,
-        # "cookiefile": cookiefile,
+        "cookiefile": cookiefile,
         # C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe --disable-features=LockProfileCookieDatabase
-        "cookiesfrombrowser": ("edge",),
+        # "cookiesfrombrowser": ("edge",),
     }
     with YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=True)

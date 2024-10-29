@@ -5,9 +5,9 @@ def download_info(url, cookiefile="cookies.txt"):
     ydl_opts = {
         "quiet": True,
         "ignoreerrors": True,
-        # "cookiefile": cookiefile,
+        "cookiefile": cookiefile,
         # C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe --disable-features=LockProfileCookieDatabase
-        "cookiesfrombrowser": ("edge",),
+        # "cookiesfrombrowser": ("edge",),
     }
     with YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
