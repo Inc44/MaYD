@@ -22,7 +22,10 @@ def download_info(url, cookiefile="cookies.txt"):
 	if po_token:
 		extractor_args["extractor_args"] = {
 			"youtube": {
-				"po_token": f"web_music.gvs+{po_token},web_music.player+{po_token}"
+				"po_token": [
+					f"web_music.gvs+{po_token}",
+					f"web_music.player+{po_token}",
+				]
 			}
 		}
 	ydl_opts = {
