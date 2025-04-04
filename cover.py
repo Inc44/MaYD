@@ -3,10 +3,9 @@ from ffmpeg import FFmpeg
 from mutagen.flac import Picture
 from mutagen.mp4 import MP4, MP4Cover
 from mutagen.oggopus import OggOpus
-from os import path, remove, rename
+from os import environ, path, remove, rename
 from subprocess import run
 from yt_dlp import YoutubeDL
-import os
 
 
 def download_video(
@@ -15,7 +14,7 @@ def download_video(
 	cookiefile="cookies.txt",
 ):
 	cookie_options = {}
-	if os.path.exists(cookiefile) and os.path.getsize(cookiefile) > 0:
+	if path.exists(cookiefile) and path.getsize(cookiefile) > 0:
 		cookie_options["cookiefile"] = cookiefile
 		print("cookiefile")
 	else:
@@ -28,6 +27,14 @@ def download_video(
 				print("cookiefrombrowser edge")
 			except Exception:
 				print("no cookie")
+	extractor_args = {}
+	po_token = environ.get("PO_TOKEN")
+	if po_token:
+		extractor_args["extractor_args"] = {
+			"youtube": {
+				"po_token": f"web_music.gvs+{po_token},web_music.player+{po_token}"
+			}
+		}
 	ydl_opts = {
 		"quiet": True,
 		"ignoreerrors": True,
@@ -35,6 +42,7 @@ def download_video(
 		"format": format,
 		# C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe --disable-features=LockProfileCookieDatabase
 		**cookie_options,
+		**extractor_args,
 	}
 	with YoutubeDL(ydl_opts) as ydl:
 		info = ydl.extract_info(url, download=True)
