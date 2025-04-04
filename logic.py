@@ -7,60 +7,60 @@ from multiprocessing import Pool, cpu_count
 
 
 def process_list(url, cookiefile, serial_processing=False):
-    info = download_info(url, cookiefile=cookiefile)
+	info = download_info(url, cookiefile=cookiefile)
 
-    # Implement a duplicate remover
+	# Implement a duplicate remover
 
-    # Create the first run patch
-    # Add the following code to the yt_dlp/utils/networking.py file at the beginning of the HTTPHeaderDict class (lines 59 to 64):
-    # from yt_dlp.utils.networking import HTTPHeaderDict
-    # def __new__(cls, *args, **kwargs):
-    #     obj = super().__new__(cls, *args, **kwargs)
-    #     obj.data = {}
-    #     return obj
+	# Create the first run patch
+	# Add the following code to the yt_dlp/utils/networking.py file at the beginning of the HTTPHeaderDict class (lines 59 to 64):
+	# from yt_dlp.utils.networking import HTTPHeaderDict
+	# def __new__(cls, *args, **kwargs):
+	#     obj = super().__new__(cls, *args, **kwargs)
+	#     obj.data = {}
+	#     return obj
 
-    # Faster debugging
-    # import pickle
-    # with open("info.pkl", "wb") as file:
-    #     pickle.dump(info, file)
-    # with open("info.pkl", "rb") as file:
-    #     info = pickle.load(file)
+	# Faster debugging
+	# import pickle
+	# with open("info.pkl", "wb") as file:
+	#     pickle.dump(info, file)
+	# with open("info.pkl", "rb") as file:
+	#     info = pickle.load(file)
 
-    playlist_path, database_path = get_info_path(info)
-    playlist_path = playlist_info(info, playlist_path)
-    database_path = write_info(info, database_path)
-    info_list = read_info(database_path)
+	playlist_path, database_path = get_info_path(info)
+	playlist_path = playlist_info(info, playlist_path)
+	database_path = write_info(info, database_path)
+	info_list = read_info(database_path)
 
-    download_domain = get_download_domain(url)
+	download_domain = get_download_domain(url)
 
-    if serial_processing:
-        for info_list_item in info_list:
-            process_list_item(info_list_item, download_domain, cookiefile)
-    else:
-        info_list_process_count = min(len(info_list), cpu_count())
-        with Pool(info_list_process_count) as pool:
-            pool.starmap(
-                process_list_item,
-                [(item, download_domain, cookiefile) for item in info_list],
-            )
+	if serial_processing:
+		for info_list_item in info_list:
+			process_list_item(info_list_item, download_domain, cookiefile)
+	else:
+		info_list_process_count = min(len(info_list), cpu_count())
+		with Pool(info_list_process_count) as pool:
+			pool.starmap(
+				process_list_item,
+				[(item, download_domain, cookiefile) for item in info_list],
+			)
 
 
 def process_list_item(info_list_item, download_domain, cookiefile):
-    id = info_list_item["id"]
+	id = info_list_item["id"]
 
-    download_url = create_download_url(download_domain, id)
+	download_url = create_download_url(download_domain, id)
 
-    audio_path = download_audio(download_url, cookiefile=cookiefile)
-    audio_container_path = container_audio(audio_path)
+	audio_path = download_audio(download_url, cookiefile=cookiefile)
+	audio_container_path = container_audio(audio_path)
 
-    file_name, is_music = create_file_name(info_list_item)
+	file_name, is_music = create_file_name(info_list_item)
 
-    if is_music:
-        video_path = download_video(download_url, cookiefile=cookiefile)
-        cover_path = extract_cover(video_path)
-        cover_path = compress_cover(cover_path)
-        audio_container_path = apply_cover(audio_container_path, cover_path)
+	if is_music:
+		video_path = download_video(download_url, cookiefile=cookiefile)
+		cover_path = extract_cover(video_path)
+		cover_path = compress_cover(cover_path)
+		audio_container_path = apply_cover(audio_container_path, cover_path)
 
-    file_path = create_file_path(audio_container_path, file_name)
+	file_path = create_file_path(audio_container_path, file_name)
 
-    return file_path
+	return file_path
