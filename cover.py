@@ -6,6 +6,7 @@ from mutagen.oggopus import OggOpus
 from os import path, remove, rename
 from subprocess import run
 from yt_dlp import YoutubeDL
+import os
 
 
 def download_video(
@@ -13,17 +14,32 @@ def download_video(
 	format="699/399/335/303/356/616/248/299/216/137/170/698/398/334/302/612/247/298/136/169",
 	cookiefile="cookies.txt",
 ):
+	cookie_options = {}
+	if os.path.exists(cookiefile) and os.path.getsize(cookiefile) > 0:
+		cookie_options["cookiefile"] = cookiefile
+		print("cookiefile")
+	else:
+		try:
+			cookie_options["cookiesfrombrowser"] = ("firefox", None)
+			print("cookiefrombrowser firefox")
+		except Exception:
+			try:
+				cookie_options["cookiesfrombrowser"] = ("edge", None)
+				print("cookiefrombrowser edge")
+			except Exception:
+				print("no cookie")
 	ydl_opts = {
 		"quiet": True,
 		"ignoreerrors": True,
 		"outtmpl": "%(id)s.%(ext)s",
 		"format": format,
-		"cookiefile": cookiefile,
 		# C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe --disable-features=LockProfileCookieDatabase
-		# "cookiesfrombrowser": ("edge", "firefox"),
+		**cookie_options,
 	}
 	with YoutubeDL(ydl_opts) as ydl:
 		info = ydl.extract_info(url, download=True)
+		if info is None:
+			raise ValueError(f"no info {url}")
 		# In order to use python-ffmpeg instead of subprocess with a double hyphen (`--`) before the output name, original paths are left stripped
 		original_video_path = ydl.prepare_filename(info)
 		video_path = original_video_path.lstrip("-")
@@ -41,17 +57,20 @@ def extract_cover(video_path):
 
 
 def compress_cover(cover_path):
-	run(
-		[
-			"ect",
-			"-9",
-			"-strip",
-			"-quiet",
-			"--strict",
-			"--mt-file",
-			cover_path,
-		]
-	)
+	try:
+		run(
+			[
+				"ect",
+				"-9",
+				"-strip",
+				"-quiet",
+				"--strict",
+				"--mt-file",
+				cover_path,
+			]
+		)
+	except Exception as e:
+		print(f"no cover {e}")
 	return cover_path
 
 

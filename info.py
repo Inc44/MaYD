@@ -1,13 +1,27 @@
 from yt_dlp import YoutubeDL
+import os
 
 
 def download_info(url, cookiefile="cookies.txt"):
+	cookie_options = {}
+	if os.path.exists(cookiefile) and os.path.getsize(cookiefile) > 0:
+		cookie_options["cookiefile"] = cookiefile
+		print("cookiefile")
+	else:
+		try:
+			cookie_options["cookiesfrombrowser"] = ("firefox", None)
+			print("cookiefrombrowser firefox")
+		except Exception:
+			try:
+				cookie_options["cookiesfrombrowser"] = ("edge", None)
+				print("cookiefrombrowser edge")
+			except Exception:
+				print("no cookie")
 	ydl_opts = {
 		"quiet": True,
 		"ignoreerrors": True,
-		"cookiefile": cookiefile,
 		# C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe --disable-features=LockProfileCookieDatabase
-		# "cookiesfrombrowser": ("edge", "firefox"),
+		**cookie_options,
 	}
 	with YoutubeDL(ydl_opts) as ydl:
 		info = ydl.extract_info(url, download=False)
@@ -17,36 +31,39 @@ def download_info(url, cookiefile="cookies.txt"):
 def get_info_path(info, playlist_path="main.playlist", database_path="main.database"):
 	invalid_file_name_chars = '\/:*?"<>|'
 	clean_translation_table = str.maketrans("", "", invalid_file_name_chars)
-
 	entries = info.get("entries", [info])
 	previous_album = None
 	same_album = True
-
-	for entry in entries:
-		if entry is None:
-			raise ValueError("Unavailable video or YouTube Music Premium only error")
+	valid_entries = [entry for entry in entries if entry is not None]
+	if not valid_entries:
+		raise ValueError("Unavailable video or YouTube Music Premium only error")
+	for entry in valid_entries:
 		current_album = entry.get("album")
 		if previous_album is not None and current_album != previous_album:
 			same_album = False
 			break
 		previous_album = current_album
-
 	if same_album and previous_album is not None:
 		previous_album = previous_album.translate(clean_translation_table)
 		playlist_path = f"""{previous_album}.playlist"""
 		database_path = f"""{previous_album}.database"""
-
 	return playlist_path, database_path
 
 
 def playlist_info(info, playlist_path="main.playlist"):
 	entries = info.get("entries", [info])
 	ids = []
+	skipped_count = 0
 	for entry in entries:
 		if entry is None:
-			raise ValueError("Unavailable video or YouTube Music Premium only error")
+			skipped_count += 1
+			continue
 		id = entry.get("id")
 		ids.append(id)
+	if not ids:
+		raise ValueError("Unavailable video or YouTube Music Premium only error")
+	if skipped_count > 0:
+		print(f"skipped {skipped_count}")
 	with open(playlist_path, "w", encoding="utf-8") as f:
 		for id in range(0, len(ids), 50):
 			playlist_chunk = ids[id : id + 50]
@@ -62,7 +79,7 @@ def write_info(info, database_path="main.database"):
 	database = []
 	for entry in entries:
 		if entry is None:
-			raise ValueError("Unavailable video or YouTube Music Premium only error")
+			continue
 		database.append(
 			{
 				"id": entry.get("id"),
@@ -74,6 +91,8 @@ def write_info(info, database_path="main.database"):
 				"release_year": entry.get("release_year"),
 			}
 		)
+	if not database:
+		raise ValueError("navailable video or YouTube Music Premium only error")
 	lines = [
 		"%(id)s\t%(title)s\t%(upload_date)s\t%(artist)s\t%(album)s\t%(track)s\t%(release_year)s"
 		% entry
