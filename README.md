@@ -39,6 +39,11 @@ MaYD is a project currently in development for downloading music from YouTube.
     pip install -r requirements.txt
     ```
 
+5. **Set Environment Variable**:
+    ```bash
+    setx /M PO_TOKEN ""
+    ```
+
 ### Important Links
 
 - [Anaconda](https://www.anaconda.com/download) - Conda GUI or [Miniconda](https://docs.conda.io/projects/miniconda/en/latest) - Conda CLI
